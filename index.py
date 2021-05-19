@@ -82,12 +82,14 @@ class Product:
         for element in records: #Obtenemos la tabla actual y eliminamos todos los datos que ya contiene para poder obtenerlos de nuevo en la consulta que realizemos
             self.tree.delete(element)
         if self.validation:
-            data = self.name.get()
+            data = self.name.get() + '%'
             session = cluster.connect()
             session.set_keyspace("db")
-            rows_busca = session.execute("SELECT * from productos where name = %(data)s ALLOW FILTERING", {"data": str(data)})
+            print(data)
+            rows_busca = session.execute("SELECT * from productos where name LIKE %(data)s", {"data":(data)})
             print (rows_busca)
             for row in rows_busca:
+                print(row)
                 self.tree.insert('', 0, text = row[1], values = row[2])
             #query = 'SELECT * from productos where name = "?"'
             #parameters = (self.name.get())#, self.price.get())
